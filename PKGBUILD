@@ -1,0 +1,34 @@
+# Maintainer: Yosef Or Boczko <yoseforb@gmail.com>
+
+_pkgname=geoclue
+pkgname=geoclue2-git
+pkgver=2.1.1.9.gb2f65cf
+pkgrel=1
+pkgdesc="The Geoinformation Service"
+arch=("i686" "x86_64")
+license=('GPLv2+')
+url="http://www.freedesktop.org/wiki/Software/GeoClue/"
+depends=('glib2' 'json-glib' 'libsoup' "geoip>=1.5.1")
+makedepends=('git' 'intltool' 'gtk-doc')
+conflicts=('geoclue2')
+replaces=('geoclue2')
+provides=("geoclue2=2.1.1")
+source=('git://anongit.freedesktop.org/geoclue')
+sha256sums=('SKIP')
+
+ pkgver() {
+  cd "${srcdir}/${_pkgname}"
+  git describe --always | sed 's|-|.|g'
+}
+
+build() {
+  cd "${srcdir}/${_pkgname}"
+  ./autogen.sh --prefix=/usr --sysconfdir=/etc --libdir=/usr/lib \
+      --disable-schemas-compile --enable-gtk-doc
+  make
+}
+
+package() {
+  cd "${srcdir}/${_pkgname}"
+  make DESTDIR="${pkgdir}" install
+}
